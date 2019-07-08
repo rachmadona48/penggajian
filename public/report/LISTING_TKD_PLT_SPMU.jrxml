@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LISTING_TKD_PLT_SPMU" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="782" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="497a3b3f-16af-4258-90f4-44dcb84bf179">
+	<property name="ireport.zoom" value="1.1269722013523664"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="134"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<subDataset name="Table Dataset 1" uuid="5afa5d82-2e2e-4dae-89b2-2e043a494890"/>
+	<parameter name="pBulan" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="pTahun" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="pUserid" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="pImage" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="pBarcode" class="java.lang.String"/>
+	<parameter name="pTHBL" class="java.lang.String"/>
+	<parameter name="pSPMU" class="java.lang.String"/>
+	<parameter name="pBulannama" class="java.lang.String"/>
+	<parameter name="pPERGUB" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+NALOKL AS NALOKL,B.NAMA NAMASPM,A.SPMU AS SPMU,KLOGAD,THBL,A.NAMA,NIP18 As NIP,A.KINERJA,
+a.NRK,GOL,NJTUNDA AS NJTUNDA,NPOTABSEN + potcuti as NPOTABSEN,NTKD,0 AS TAHAP1, 0 AS NPPHTUNDA,
+NTKDSTLPPH,NASURANSI,NJTUNDABERSIH, E.NPWP,TKD_EKIN,NPOTTKD,TGL_PUBLISH,(NJTUNDA * 0.5) AS NJTUNDA_PLT,
+$P{pBulannama}  AS BULAN ,
+SUBSTR(THBL,1,4) AS TAHUN,
+(CASE SUBSTR(GOL,2,1)
+          WHEN '1' THEN 'I'
+          WHEN '2' THEN 'II'
+          WHEN '3' THEN 'III'
+          WHEN '4' THEN 'IV'
+ END ) AS GOLONGAN,
+(CASE SUBSTR(GOL,3,1)
+          WHEN '1' THEN 'A'
+          WHEN '2' THEN 'B'
+          WHEN '3' THEN 'C'
+          WHEN '4' THEN 'D'
+		  WHEN '5' THEN 'E'
+ END ) AS PANGKAT,
+ case when KOJAB IN ('000006','000007','000008','000009','000016','000017',
+                          '000018','000019','000021','000022','000023','000024','000025') then NVL(NJTNDSELBEL,0)
+           else NVL(TKD_EKIN,0)+NVL(NJTNDTAMBAH,0)+NVL(NJTNDSELISIH,0) end BRUTO,
+CASE WHEN STAPEG=1 THEN 'CPNS' ELSE 'PNS' END AS STAPEG,KOJAB,
+NVL(NTKDSTLPPH,0)+NVL(NPPHTUNDA,0) AS TKDPLUSPPH
+from PROSES_TKD_PLT A INNER JOIN pers_tabel_spmu B ON A.SPMU = B.KODE_SPM
+INNER JOIN pers_lokasi_tbl C ON KLOGAD = C.KOLOK
+INNER JOIN PERS_ESELON_TBL D ON NVL(A.ESELON,'  ') = D.ESELON
+LEFT JOIN  NPWP E ON A.NRK = E.NRK
+WHERE thbl=$P{pTHBL} AND NJTUNDABERSIH > 0 AND SPMU = $P{pSPMU}
+and a.upload = 1
+order by spmu,klogad asc,stapeg desc,D.CETAKAN, gol desc,nrk asc]]>
+	</queryString>
+	<field name="NALOKL" class="java.lang.String"/>
+	<field name="NAMASPM" class="java.lang.String"/>
+	<field name="SPMU" class="java.lang.String"/>
+	<field name="KLOGAD" class="java.lang.String"/>
+	<field name="THBL" class="java.lang.String"/>
+	<field name="NAMA" class="java.lang.String"/>
+	<field name="NIP" class="java.lang.String"/>
+	<field name="KINERJA" class="java.math.BigDecimal"/>
+	<field name="NRK" class="java.lang.String"/>
+	<field name="GOL" class="java.lang.String"/>
+	<field name="NJTUNDA" class="java.math.BigDecimal"/>
+	<field name="NPOTABSEN" class="java.math.BigDecimal"/>
+	<field name="NTKD" class="java.math.BigDecimal"/>
+	<field name="TAHAP1" class="java.math.BigDecimal"/>
+	<field name="NPPHTUNDA" class="java.math.BigDecimal"/>
+	<field name="NTKDSTLPPH" class="java.math.BigDecimal"/>
+	<field name="NASURANSI" class="java.math.BigDecimal"/>
+	<field name="NJTUNDABERSIH" class="java.math.BigDecimal"/>
+	<field name="NPWP" class="java.lang.String"/>
+	<field name="TKD_EKIN" class="java.math.BigDecimal"/>
+	<field name="NPOTTKD" class="java.math.BigDecimal"/>
+	<field name="TGL_PUBLISH" class="java.sql.Timestamp"/>
+	<field name="NJTUNDA_PLT" class="java.math.BigDecimal"/>
+	<field name="BULAN" class="java.lang.String"/>
+	<field name="TAHUN" class="java.lang.String"/>
+	<field name="GOLONGAN" class="java.lang.String"/>
+	<field name="PANGKAT" class="java.lang.String"/>
+	<field name="BRUTO" class="java.math.BigDecimal"/>
+	<field name="STAPEG" class="java.lang.String"/>
+	<field name="KOJAB" class="java.lang.String"/>
+	<field name="TKDPLUSPPH" class="java.math.BigDecimal"/>
+	<variable name="sumNJTUNDA" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NJTUNDA}]]></variableExpression>
+	</variable>
+	<variable name="sumNPOTABSEN" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NPOTABSEN}]]></variableExpression>
+	</variable>
+	<variable name="sumNTKD" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NTKD}]]></variableExpression>
+	</variable>
+	<variable name="sumNPPHTUNDA" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NPPHTUNDA}]]></variableExpression>
+	</variable>
+	<variable name="sumNTKDSTLPPH" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NTKDSTLPPH}]]></variableExpression>
+	</variable>
+	<variable name="sumNASURANSI" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NASURANSI}]]></variableExpression>
+	</variable>
+	<variable name="sumNJTUNDABERSIH" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NJTUNDABERSIH}]]></variableExpression>
+	</variable>
+	<variable name="sumNJTUNDA_1" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{NJTUNDA}]]></variableExpression>
+	</variable>
+	<variable name="sumNPOTABSEN_1" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{NPOTABSEN}]]></variableExpression>
+	</variable>
+	<variable name="sumNTKD_1" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{NTKD}]]></variableExpression>
+	</variable>
+	<variable name="sumNPPHTUNDA_1" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{NPPHTUNDA}]]></variableExpression>
+	</variable>
+	<variable name="sumNTKDSTLPPH_1" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{NTKDSTLPPH}]]></variableExpression>
+	</variable>
+	<variable name="sumNASURANSI_1" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{NASURANSI}]]></variableExpression>
+	</variable>
+	<variable name="sumNJTUNDABERSIH_1" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{NJTUNDABERSIH}]]></variableExpression>
+	</variable>
+	<variable name="sumBRUTO" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{BRUTO}]]></variableExpression>
+	</variable>
+	<variable name="sumBRUTO_1" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{BRUTO}]]></variableExpression>
+	</variable>
+	<variable name="sum_TKDPLUSPPH" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{TKDPLUSPPH}]]></variableExpression>
+	</variable>
+	<variable name="sumTAHAP1" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{TAHAP1}]]></variableExpression>
+	</variable>
+	<variable name="sumTKD_EKIN" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{TKD_EKIN}]]></variableExpression>
+	</variable>
+	<variable name="sumNPOTTKD" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NPOTTKD}]]></variableExpression>
+	</variable>
+	<variable name="sumNJTUNDA_PLT" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NJTUNDA_PLT}]]></variableExpression>
+	</variable>
+	<group name="G_SPMU" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{SPMU}]]></groupExpression>
+		<groupHeader>
+			<band height="97" splitType="Stretch">
+				<staticText>
+					<reportElement key="staticText-5" x="5" y="57" width="48" height="14" uuid="7eb8a883-a85e-4bc8-bd7f-e74ce3a3b030"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="SansSerif" size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[BULAN :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField" x="54" y="57" width="77" height="14" uuid="47badcbd-8c18-411e-9e71-b58d154d083b"/>
+					<textElement>
+						<font fontName="SansSerif" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{BULAN}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement key="staticText-6" x="136" y="57" width="58" height="14" uuid="1aa197e3-c1d1-4c3a-ba86-40c932e26c95"/>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="SansSerif" size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TAHUN :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-1" x="194" y="57" width="77" height="14" uuid="88e273f6-fbda-4a9a-88d5-1c566a433fca"/>
+					<textElement>
+						<font fontName="SansSerif" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{TAHUN}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField" x="638" y="57" width="80" height="20" uuid="d27f5de5-e42e-4d19-bd19-dcc84d469c94"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement key="rectangle" x="0" y="77" width="767" height="20" uuid="9410c991-8fd4-4cf5-ac6a-8ab88b70b911"/>
+				</rectangle>
+				<textField evaluationTime="Report" isBlankWhenNull="false">
+					<reportElement key="textField" x="718" y="57" width="40" height="20" uuid="30da0f06-0aa6-4593-a602-6e795401ab8d"/>
+					<textElement>
+						<font fontName="SansSerif" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField" x="5" y="81" width="525" height="16" uuid="2ee1fe91-ce17-4697-af01-e70adeb32e7c"/>
+					<textElement>
+						<font fontName="SansSerif" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["SKPD: "+$F{NAMASPM}]]></textFieldExpression>
+				</textField>
+				<image>
+					<reportElement key="image-1" x="3" y="3" width="40" height="40" uuid="c697ed57-eb39-46e2-8c2f-3eb611c085e6"/>
+					<imageExpression><![CDATA["http://10.15.34.34:81/assets/img/logodki.png"]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement key="staticText-22" x="39" y="11" width="207" height="26" uuid="5d12c52f-284b-4c1d-9211-b6f1ddbecf7b"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[ PEMERINTAH PROVINSI DKI JAKARTA
+BADAN KEPEGAWAIAN DAERAH]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-25" x="291" y="16" width="340" height="36" uuid="ca3c3b3b-b1c1-4ff9-9ade-254c2713387d"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{pPERGUB}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<group name="G_KALOGAD" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{KLOGAD}]]></groupExpression>
+		<groupHeader>
+			<band height="66" splitType="Stretch">
+				<rectangle>
+					<reportElement key="rectangle" x="0" y="0" width="767" height="20" uuid="f9ae1e96-7ac8-44c7-8960-5c2be588881a"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="44" y="20" width="157" height="46" uuid="eae9fdbc-76d6-486d-add7-aeee5df690a1"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="201" y="20" width="29" height="46" uuid="819ae52e-5ba4-4860-acff-b1e95ecd9fc6"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="230" y="20" width="92" height="46" uuid="e6fba168-f3c8-415b-8343-9be61445c307"/>
+				</rectangle>
+				<staticText>
+					<reportElement key="staticText" x="203" y="27" width="26" height="12" uuid="4b819cc1-c914-436b-872b-9529c65e90b6"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[GOL.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText" x="235" y="27" width="82" height="27" uuid="fb09bbb5-25cd-41b2-a840-ace2cb3af84b"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TKD]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement key="rectangle" x="0" y="20" width="44" height="46" uuid="9c31a97b-b334-4f60-8797-2dac5eaac822"/>
+				</rectangle>
+				<staticText>
+					<reportElement key="staticText" x="5" y="24" width="32" height="24" uuid="d036e8a7-597c-4309-a00a-ccbd04dabd8f"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[NO]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement key="rectangle" x="322" y="20" width="78" height="46" uuid="50bd330b-c56b-4aa9-9900-8b8ab29e1575"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="400" y="20" width="100" height="46" uuid="2600feca-ef6c-4410-999d-2f7890927060"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="500" y="20" width="89" height="46" uuid="ed478c08-8dc7-4d0a-ba89-0f508e2d4143"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="589" y="20" width="89" height="46" uuid="949b1c30-0c84-469c-ad7b-d6d521ed94ec"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="678" y="20" width="89" height="46" uuid="22fdff69-3f45-4474-a6d3-47b9462fd720"/>
+				</rectangle>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField" x="5" y="2" width="525" height="18" uuid="6a1b7497-c709-426d-8ea3-753dc6f8992c"/>
+					<textElement>
+						<font fontName="SansSerif" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["UKPD: "+$F{NALOKL}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement key="staticText-9" x="70" y="36" width="87" height="12" uuid="556dc588-7b0d-46ab-a5a4-ee876cd72e1c"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[N.I.P / N.R.K]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-10" x="73" y="24" width="87" height="12" uuid="9fb4ef25-0aff-4aef-a2ef-57bd848c6a08"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[NAMA PEGAWAI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-12" x="325" y="27" width="74" height="15" uuid="4a3dc2a5-9c91-4e3b-b328-f9e7017194c7"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TKD BRUTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-17" x="411" y="27" width="81" height="14" uuid="8ea33b0f-1786-4e8b-bd94-c5a77ac86757"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TKD NETTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-19" x="505" y="27" width="80" height="12" uuid="b70b5acc-7e72-45bd-bcd9-8646dd993aff"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[PPH (GAJI +TKD)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-20" x="593" y="27" width="80" height="12" uuid="34ed6976-57fc-43f3-9fd4-b4e159fd146d"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TKD+PPH]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-23" x="683" y="27" width="80" height="13" uuid="1ac8dd79-7080-42c7-a304-47375d8c893c"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TKD DITERIMA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-24" x="681" y="48" width="84" height="12" uuid="2eea464d-7a17-429d-b0ec-84a40832aec0"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[POT.PPH(Gaji+TKD)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-25" x="66" y="48" width="108" height="12" uuid="d2083592-d9ae-494b-bbf0-29a17e1f1708"/>
+					<textElement textAlignment="Justified">
+						<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[STAPEG/KOJAB/NPWP]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-27" x="202" y="42" width="26" height="12" uuid="6bab60bf-15a3-4018-a916-94df20355ebb"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[KIN.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-28" x="325" y="45" width="74" height="15" uuid="508eb6e4-ef1b-4ad5-8377-d394930d15f7"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[POTONGAN TKD]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="126" splitType="Stretch">
+				<rectangle>
+					<reportElement key="rectangle-6" x="322" y="0" width="78" height="37" uuid="613e87a3-d6a0-4fd6-85b4-160522bc2c1d"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-1" x="230" y="0" width="92" height="37" uuid="80a75957-8068-4127-98f2-8102da8e8709"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-2" x="678" y="0" width="89" height="37" uuid="6d381a8b-024e-4d5e-8f3a-7107f509ab54"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-3" x="589" y="0" width="89" height="37" uuid="36372413-df69-4c15-8ec6-37f8f7b47969"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-4" x="500" y="0" width="89" height="37" uuid="75a31885-c5d0-44bd-9b9d-b11092dd6b24"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-5" x="0" y="0" width="230" height="37" uuid="97bb110d-da07-482e-a47c-24d16a3936e5"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-7" x="400" y="0" width="100" height="37" uuid="5c7f4d0f-6a82-410c-a6d1-ad32860a8d01"/>
+				</rectangle>
+				<textField pattern="#,##0" isBlankWhenNull="false">
+					<reportElement key="textField-5" x="410" y="4" width="87" height="15" uuid="73eca3ca-d6fe-4cc8-85ae-765062718a1d"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumNTKD}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement key="staticText-7" x="121" y="7" width="100" height="20" uuid="ece70d4d-b303-4d0c-a6ea-aea80e63c5e2"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="12" isBold="false"/>
+					</textElement>
+					<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<textField pattern="#,##0" isBlankWhenNull="false">
+					<reportElement key="textField-8" x="500" y="4" width="85" height="15" uuid="1332b985-347d-4a1d-a364-8a94992a2926"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumNPPHTUNDA_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0" isBlankWhenNull="false">
+					<reportElement key="textField-9" x="678" y="20" width="84" height="15" uuid="929f52f2-3ae9-4677-9a78-d1c2dfbf52bc"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumNPPHTUNDA_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0" isBlankWhenNull="false">
+					<reportElement key="textField-10" x="591" y="4" width="85" height="15" uuid="194c9d1a-19d4-4b0e-8c5a-ab750a750777"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_TKDPLUSPPH}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0" isBlankWhenNull="false">
+					<reportElement key="textField-14" x="326" y="4" width="69" height="14" uuid="5a11763a-0c8f-42e3-9110-f971967861ee"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumTKD_EKIN}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement key="staticText-13" x="530" y="46" width="130" height="16" uuid="e6f5adae-833e-4db9-b554-2b2bc34a8241"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[JAKARTA,]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-14" x="556" y="61" width="130" height="16" uuid="63c3c109-fe2b-45de-a92d-258ee4aae0e3"/>
+					<textElement verticalAlignment="Top">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[MENGETAHUI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-15" x="491" y="76" width="52" height="16" uuid="495cb485-7999-4a87-8b17-d8f384ea91e6"/>
+					<textElement>
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[KEPALA : ]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-15" x="547" y="76" width="203" height="44" uuid="a42218b6-7066-48b7-a3a7-7477d56948fa"/>
+					<textElement>
+						<font fontName="SansSerif"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NALOKL}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0" isBlankWhenNull="false">
+					<reportElement key="textField-20" x="678" y="4" width="85" height="15" uuid="61758f5d-9597-465d-8d01-b11329e1a70a"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumNJTUNDABERSIH_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0" isBlankWhenNull="false">
+					<reportElement key="textField-24" x="326" y="20" width="69" height="15" uuid="5ff0361c-37b1-4fb9-aaa1-50859c4e3a37"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumNPOTTKD}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0" isBlankWhenNull="false">
+					<reportElement key="textField" x="236" y="4" width="80" height="12" uuid="df214963-2c72-40f7-8cb6-40220c76efb2"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumNJTUNDA_PLT}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="50" splitType="Stretch">
+			<rectangle>
+				<reportElement key="rectangle" x="678" y="0" width="89" height="50" uuid="425f24c9-713c-4ce3-933c-9ec1d6ec17bb"/>
+			</rectangle>
+			<rectangle>
+				<reportElement key="rectangle" x="44" y="0" width="157" height="50" backcolor="#FFFFFF" uuid="76fd8676-e6b8-45a1-b90a-141f41802b16"/>
+			</rectangle>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="49" y="6" width="152" height="12" uuid="46248b30-96fb-446b-80e2-44f78d9a21a6"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAMA}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement key="rectangle" x="201" y="0" width="29" height="50" uuid="f27b26ce-98fa-4d94-9f5f-1f2ab282adab"/>
+			</rectangle>
+			<rectangle>
+				<reportElement key="rectangle" x="230" y="0" width="92" height="50" uuid="d5f91976-600a-4bca-822e-405bc169062c"/>
+			</rectangle>
+			<rectangle>
+				<reportElement key="rectangle" x="0" y="0" width="44" height="50" uuid="159879a2-cca4-44ed-9015-8dde4984b549"/>
+			</rectangle>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" x="5" y="6" width="27" height="20" uuid="779125ac-99df-4eeb-b44d-ac7ab8b9b3b3"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{G_KALOGAD_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="49" y="18" width="151" height="18" uuid="016d1f88-f2c3-43af-9476-a9208d100af8"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="SansSerif" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NIP}+" / "+$F{NRK}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement key="rectangle" x="322" y="0" width="78" height="50" uuid="af552229-432d-4f07-9a67-773da5a57bd8"/>
+			</rectangle>
+			<rectangle>
+				<reportElement key="rectangle" x="400" y="0" width="100" height="50" uuid="d13d537c-b7d3-4b8b-9f6e-45aa7bc9e2c9"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="false">
+				<reportElement key="textField" x="413" y="12" width="82" height="12" uuid="7dd9851e-cca3-448d-9b88-8f0bf62ad4a0"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NTKD}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement key="rectangle" x="500" y="0" width="89" height="50" uuid="b670883f-6d87-4212-b5d9-844c06a44a2b"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement key="textField" x="504" y="12" width="79" height="12" uuid="4000fa33-6b14-4cbe-89b9-914406b5da31"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NPPHTUNDA}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement key="rectangle" x="589" y="0" width="89" height="50" uuid="b7f8fefe-9a81-44f4-ba05-b505a6a2132d"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement key="textField" x="591" y="12" width="84" height="12" uuid="8761d420-b754-431a-aae6-0d2721e4f18e"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TKDPLUSPPH}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="false">
+				<reportElement key="textField" x="679" y="29" width="82" height="12" uuid="2e0fd09d-e2a0-4e79-8975-5346003fc4bc"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NPPHTUNDA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="false">
+				<reportElement key="textField-12" x="330" y="12" width="66" height="12" uuid="3ed9533f-e05d-4c0a-888f-6ccbea49b7d1"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TKD_EKIN}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="false">
+				<reportElement key="textField-18" x="680" y="12" width="82" height="12" uuid="f9561d92-0188-4cac-9e35-5d3a016d8fc2"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NJTUNDABERSIH}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-21" x="49" y="31" width="151" height="19" uuid="97dfbb4b-92b9-45b3-ac12-80183b3e0da8"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{STAPEG}+" / "+$F{KOJAB}+" / "+$F{NPWP}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="204" y="12" width="24" height="12" uuid="0ff4daf4-649f-41e4-8c26-21b33d22fc92"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GOLONGAN}+"/"+$F{PANGKAT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-22" x="204" y="26" width="25" height="12" uuid="343eb9ad-eb01-406a-9f65-374063d459bd"/>
+				<textElement>
+					<font fontName="SansSerif" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{KINERJA}+"%"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="false">
+				<reportElement key="textField-23" x="330" y="30" width="66" height="12" uuid="9b264e39-4d45-4678-ae89-5efbe17c91cf"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NPOTTKD}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement key="textField" x="235" y="12" width="81" height="12" uuid="955b37e1-3dfa-4b25-b3d3-e7aa64fc06e5"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NJTUNDA_PLT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="31" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement key="textField-26" x="146" y="17" width="60" height="12" uuid="b679c2d1-8475-47ad-a826-f17c98cc7e4a"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="SansSerif" size="7" isItalic="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-29" x="82" y="17" width="66" height="12" uuid="423bf88b-40f2-4516-8cf2-02d127dfb4e9"/>
+				<textElement textAlignment="Left">
+					<font fontName="SansSerif" size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[TANGGAL CETAK :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-30" x="82" y="7" width="66" height="12" uuid="a0ff6162-ff05-48d3-82f5-3ee5c758269e"/>
+				<textElement textAlignment="Left">
+					<font fontName="SansSerif" size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[TANGGAL TERBIT:]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-1" x="82" y="17" width="107" height="1" uuid="9ca9e1af-93ef-4cdc-98a9-080d8ddf4f75"/>
+			</line>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement key="textField-27" x="146" y="7" width="60" height="12" uuid="1c261b94-c8a2-4bca-b9f6-eb436eae0e13"/>
+				<textElement textAlignment="Left">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TGL_PUBLISH}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

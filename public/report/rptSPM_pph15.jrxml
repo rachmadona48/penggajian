@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptSPM_pph15" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="782" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="1d0b16e5-6d4a-4e1c-a882-434a5842cc3b">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<subDataset name="Table Dataset 1" uuid="6974cd6a-7b35-4737-bfb2-31d37f4d72fc"/>
+	<parameter name="pBulan" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="pUserid" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="pImage" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="pBarcode" class="java.lang.String"/>
+	<parameter name="pTHBL" class="java.lang.String"/>
+	<parameter name="pBulannama" class="java.lang.String"/>
+	<parameter name="pSPMU" class="java.lang.String"/>
+	<parameter name="pKETERANGAN" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+NALOKL AS NALOKL,B.NAMA NAMASPM,A.SPMU AS SPMU,KLOGAD,THBL,A.NAMA,NIP18 As NIP,A.KINERJA,
+a.NRK,GOL,NJTUNDA,NPOTABSEN,NJTNDTAMBAH,NBPU,NJTNDSELISIH,NTKD,NJTNDSELBEL,NPPHTUNDA
+,NTKDSTLPPH,NASURANSI,NJTUNDABERSIH,E.NPWP,
+$P{pBulannama}  AS BULAN ,
+SUBSTR(THBL,1,4) AS TAHUN,
+(CASE SUBSTR(GOL,2,1)
+          WHEN '1' THEN 'I'
+          WHEN '2' THEN 'II'
+          WHEN '3' THEN 'III'
+          WHEN '4' THEN 'IV'
+ END ) AS GOLONGAN,
+(CASE SUBSTR(GOL,3,1)
+          WHEN '1' THEN 'A'
+          WHEN '2' THEN 'B'
+          WHEN '3' THEN 'C'
+          WHEN '4' THEN 'D'
+		  WHEN '5' THEN 'E'
+ END ) AS PANGKAT,
+ nvl(NPPHTUNDA,0) AS SELPPH
+from PERS_DUK_PANGKAT_HIST_PPH A INNER JOIN pers_tabel_spmu B ON A.SPMU = B.KODE_SPM
+INNER JOIN pers_lokasi_tbl C ON KLOGAD = C.KOLOK
+INNER JOIN PERS_ESELON_TBL D ON NVL(A.ESELON,'  ') = D.ESELON
+LEFT JOIN  NPWP E ON A.NRK = E.NRK
+WHERE
+thbl=$P{pTHBL}  AND A.SPMU = $P{pSPMU} and NVL(NPPHTUNDA,0)>0 and a.upload = 1
+order by spmu,klogad asc,stapeg desc,D.CETAKAN, gol desc,a.KODIKF, nrk asc]]>
+	</queryString>
+	<field name="NALOKL" class="java.lang.String"/>
+	<field name="NAMASPM" class="java.lang.String"/>
+	<field name="SPMU" class="java.lang.String"/>
+	<field name="KLOGAD" class="java.lang.String"/>
+	<field name="THBL" class="java.lang.String"/>
+	<field name="NAMA" class="java.lang.String"/>
+	<field name="NIP" class="java.lang.String"/>
+	<field name="KINERJA" class="java.math.BigDecimal"/>
+	<field name="NRK" class="java.lang.String"/>
+	<field name="GOL" class="java.lang.String"/>
+	<field name="NJTUNDA" class="java.math.BigDecimal"/>
+	<field name="NPOTABSEN" class="java.math.BigDecimal"/>
+	<field name="NJTNDTAMBAH" class="java.math.BigDecimal"/>
+	<field name="NBPU" class="java.math.BigDecimal"/>
+	<field name="NJTNDSELISIH" class="java.math.BigDecimal"/>
+	<field name="NTKD" class="java.math.BigDecimal"/>
+	<field name="NJTNDSELBEL" class="java.math.BigDecimal"/>
+	<field name="NPPHTUNDA" class="java.math.BigDecimal"/>
+	<field name="NTKDSTLPPH" class="java.math.BigDecimal"/>
+	<field name="NASURANSI" class="java.math.BigDecimal"/>
+	<field name="NJTUNDABERSIH" class="java.math.BigDecimal"/>
+	<field name="NPWP" class="java.lang.String"/>
+	<field name="BULAN" class="java.lang.String"/>
+	<field name="TAHUN" class="java.lang.String"/>
+	<field name="GOLONGAN" class="java.lang.String"/>
+	<field name="PANGKAT" class="java.lang.String"/>
+	<field name="SELPPH" class="java.math.BigDecimal"/>
+	<variable name="sumSELPPH" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SELPPH}]]></variableExpression>
+	</variable>
+	<variable name="sumSELPPH_1" class="java.math.BigDecimal" resetType="Group" resetGroup="G_KALOGAD" calculation="Sum">
+		<variableExpression><![CDATA[$F{SELPPH}]]></variableExpression>
+	</variable>
+	<group name="G_SPMU" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{SPMU}]]></groupExpression>
+		<groupHeader>
+			<band height="97" splitType="Stretch">
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField" x="638" y="57" width="80" height="20" uuid="90a405e6-b371-4c19-a0a8-e54fade9a1cc"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement key="rectangle" x="0" y="77" width="767" height="20" uuid="a2f34543-5368-410c-b288-855c019e1e26"/>
+				</rectangle>
+				<textField evaluationTime="Report" isBlankWhenNull="false">
+					<reportElement key="textField" x="718" y="57" width="40" height="20" uuid="a956cae7-ee5b-493f-a135-9e2f96f63833"/>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField" x="5" y="81" width="525" height="12" uuid="ef6efa1f-7ca8-4a85-a92d-b8c1d3792c32"/>
+					<textElement>
+						<font fontName="SansSerif" size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["SKPD: "+$F{NAMASPM}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement key="staticText-22" x="46" y="10" width="218" height="25" uuid="e0fa69cb-16a4-4445-8250-eb659301b6f9"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[PEMERINTAH PROVINSI DKI JAKARTA
+BADAN PENGELOLA KEUANGAN DAERAH]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-24" x="250" y="10" width="340" height="20" uuid="61ab8b20-f436-4ccf-a7ca-a54ee17637f4"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA["DAFTAR PPH BULAN " +$F{BULAN}+" "+$F{TAHUN}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-25" x="250" y="37" width="350" height="33" uuid="fb471aa6-3d45-42a1-8fed-1241fc877ada"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{pKETERANGAN}]]></textFieldExpression>
+				</textField>
+				<image>
+					<reportElement x="8" y="6" width="55" height="41" uuid="61fd4a00-1bea-4ac9-9bd5-c173cae3df89"/>
+					<imageExpression><![CDATA["http://10.15.34.34:81/assets/img/logodki.png"]]></imageExpression>
+				</image>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<group name="G_KALOGAD" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{KLOGAD}]]></groupExpression>
+		<groupHeader>
+			<band height="50" splitType="Stretch">
+				<rectangle>
+					<reportElement key="rectangle" x="0" y="0" width="767" height="20" uuid="dc4b560b-c419-4a6b-9351-cb7dd105750f"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="44" y="20" width="157" height="30" uuid="b638f7ec-72e9-41a3-aad9-5a8848136275"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="201" y="20" width="29" height="30" uuid="d4c99f35-3c71-443f-9186-f3e1ed64b4c5"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="230" y="20" width="92" height="30" uuid="01574301-bcb2-477e-a2a8-bf2c305a94c0"/>
+				</rectangle>
+				<staticText>
+					<reportElement key="staticText" x="201" y="23" width="26" height="22" uuid="ba4e4f03-f05c-49d2-85a3-3c5dc9d5a121"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[GOL.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText" x="234" y="23" width="87" height="12" uuid="803db11f-abaa-4050-9b87-eedf4dbff131"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TKD DIKELASNYA]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement key="rectangle" x="0" y="20" width="44" height="30" uuid="18ca6347-7ca2-471d-8b10-2139aafdc829"/>
+				</rectangle>
+				<staticText>
+					<reportElement key="staticText" x="5" y="22" width="39" height="24" uuid="1e72528d-945c-4ed5-ad57-a9793d304264"/>
+					<textElement>
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[NO]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement key="rectangle" x="322" y="20" width="89" height="30" uuid="8bcc5f07-6fca-4950-b8d9-90fdbd232aa7"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="411" y="20" width="89" height="30" uuid="1d6d3e42-7fc0-4508-8c6a-be1cc71bc301"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="500" y="20" width="89" height="30" uuid="eff1f286-f586-4453-8fdc-f2b7e686c8be"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="589" y="20" width="89" height="30" uuid="d58bd70d-d4b9-40f0-9d8a-d694381a5a74"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle" x="678" y="20" width="89" height="30" uuid="a07b7c92-0334-4dad-bbe5-3df478a2c9a2"/>
+				</rectangle>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField" x="5" y="2" width="525" height="12" uuid="72aa2df4-89ef-4c19-828b-a64437425bad"/>
+					<textElement>
+						<font fontName="SansSerif" size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["UKPD: "+$F{NALOKL}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement key="staticText-8" x="234" y="34" width="87" height="12" uuid="850cd3ee-4d6d-4b53-9852-44adfc676ea5"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TKD BRUTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-9" x="63" y="33" width="107" height="12" uuid="ff40f770-8ee6-4264-a508-e1953381e2bf"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[NIP / NRK / NPWP]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-10" x="73" y="22" width="87" height="12" uuid="7af203c3-ec45-4e8d-abab-5d3b671db9f4"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[NAMA PEGAWAI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-11" x="321" y="23" width="95" height="22" uuid="894fa8b3-48ac-4e79-9470-96454ba57fc4"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TAMBAHAN  TKD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-12" x="330" y="37" width="80" height="12" uuid="87f68d3b-72f3-4898-beb0-8b292faa4f54"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[POT. ABSENSI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-16" x="416" y="22" width="80" height="15" uuid="0cfa7316-1ba0-4e7d-8663-af8039a7b673"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[SELISIH TKD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-17" x="416" y="36" width="80" height="12" uuid="fe2ef0cf-8685-4b87-8edd-2bba92a18ce0"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TKD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-18" x="505" y="22" width="80" height="13" uuid="15343519-0eed-47bb-9413-79156fe6be20"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[SELISIH TBEL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-20" x="592" y="23" width="80" height="12" uuid="23255f1d-534d-49aa-a408-10ef3f6250e3"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TKD+PPH]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-21" x="592" y="35" width="80" height="12" uuid="970cdaf0-af5f-4637-b479-1572e4464a9d"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[POT.ASURANSI]]></text>
+				</staticText>
+				<line>
+					<reportElement key="line-3" x="589" y="21" width="1" height="29" uuid="e0c2b865-92ba-48df-bbad-1f24bd039cce"/>
+					<graphicElement>
+						<pen lineWidth="1.0" lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement key="staticText-23" x="683" y="22" width="80" height="13" uuid="84e04d9e-270d-49df-be5b-07eee4ba2022"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[TKD DITERIMA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-45" x="505" y="35" width="80" height="15" uuid="fc96e45f-5beb-4ba6-97b6-1e3613e4ff71"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[PPH]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-46" x="682" y="35" width="80" height="15" uuid="49782fde-f3ef-499e-a2ee-868aebc987b4"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[POT. PPH]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="126" splitType="Stretch">
+				<rectangle>
+					<reportElement key="rectangle-6" x="322" y="0" width="89" height="37" uuid="13dccec4-1b8a-484a-b1fc-8dce697fdc52"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-1" x="230" y="0" width="92" height="37" uuid="2f5b4a35-4a71-42eb-aed4-6aa8f64057ba"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-2" x="678" y="0" width="89" height="37" uuid="43a8355e-9d1f-464f-ae02-157a3ba21ebb"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-3" x="589" y="0" width="89" height="37" uuid="46ec31e7-fa27-438e-934f-77acec28eb24"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-4" x="500" y="0" width="89" height="37" uuid="22ca58ae-b853-4172-baff-d87a1a1ff31f"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-5" x="0" y="0" width="230" height="37" uuid="18ecefaf-b075-4c8e-a8d8-e1199c5e3fcb"/>
+				</rectangle>
+				<rectangle>
+					<reportElement key="rectangle-7" x="411" y="0" width="89" height="37" uuid="16f6cce9-44a2-4067-b882-949b9e408f7b"/>
+				</rectangle>
+				<staticText>
+					<reportElement key="staticText-7" x="121" y="7" width="100" height="20" uuid="17634690-6ee2-4f5e-8494-854ffcb8d0f4"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-13" x="530" y="46" width="130" height="16" uuid="2d441d63-ed19-4005-bb9f-584189817f9f"/>
+					<textElement verticalAlignment="Top"/>
+					<text><![CDATA[JAKARTA,]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-14" x="556" y="61" width="130" height="16" uuid="7e948499-ace9-45ff-b4b8-0643243ba44f"/>
+					<textElement verticalAlignment="Top"/>
+					<text><![CDATA[MENGETAHUI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-15" x="491" y="76" width="52" height="16" uuid="7d7b68a6-760c-4b27-a806-c36fe13adfb0"/>
+					<text><![CDATA[KEPALA : ]]></text>
+				</staticText>
+				<textField isBlankWhenNull="false">
+					<reportElement key="textField-15" x="547" y="76" width="203" height="44" uuid="12b52095-d8fd-4fad-bfa9-cf34d23719f1"/>
+					<textFieldExpression><![CDATA[$F{NAMASPM}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement key="line-1" x="589" y="0" width="1" height="37" uuid="fb3bf24a-c9bf-4fe4-8222-dd22781ddf61"/>
+					<graphicElement>
+						<pen lineWidth="1.0" lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<textField pattern="#,##0" isBlankWhenNull="false">
+					<reportElement key="textField-21" x="499" y="19" width="85" height="15" uuid="fb9c5e0c-3aff-4d51-8747-b9cf0fb3fb32"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumSELPPH_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0" isBlankWhenNull="false">
+					<reportElement key="textField-23" x="681" y="18" width="85" height="15" uuid="09e06db0-e43b-49c0-b1c0-60e0398b05f4"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumSELPPH_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement key="staticText-27" x="257" y="6" width="58" height="15" uuid="53de15ff-faa8-4b92-b8cc-7655a9dc0424"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[0]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-28" x="257" y="18" width="58" height="15" uuid="670616fa-7927-4480-9f16-07b172979e29"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[0]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-31" x="348" y="7" width="58" height="15" uuid="847b337e-f63a-4f5a-aca8-c9121dbc7503"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[0]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-32" x="348" y="19" width="58" height="15" uuid="c4a3ed16-71f6-4a4b-ad4b-406e2b83fcd4"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[0]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-33" x="435" y="7" width="58" height="15" uuid="d1d7805c-61ba-4f83-8f3d-0bb07b7814b1"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[0]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-34" x="435" y="19" width="58" height="15" uuid="dfed074d-3b6d-4a7a-afd4-f47603e5cb10"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[0]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-37" x="615" y="7" width="58" height="15" uuid="d881a7c3-d588-41f5-b2b1-51d4904e7335"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[0]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-38" x="615" y="19" width="58" height="15" uuid="ff99567f-6f2e-4c7a-abd5-631453d1345d"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[0]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-42" x="526" y="4" width="58" height="15" uuid="6b171726-ac9b-4081-befe-a23c6a4e7ad3"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[0]]></text>
+				</staticText>
+				<staticText>
+					<reportElement key="staticText-44" x="706" y="5" width="58" height="15" uuid="7645a00d-d160-4047-ac56-5ef6771bc6dc"/>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif"/>
+					</textElement>
+					<text><![CDATA[0]]></text>
+				</staticText>
+				<componentElement>
+					<reportElement x="49" y="44" width="73" height="74" uuid="84be08ea-ce5a-475d-9a1c-d32081eef838"/>
+					<jr:DataMatrix xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="bottom">
+						<jr:codeExpression><![CDATA["http://pegawai.jakarta.go.id/validasi/qr_rptSPM_pph15?thbl="+$P{pTHBL}+"&klogad="+$F{KLOGAD}+"&spmu="+$F{SPMU}+"&bulan="+$F{BULAN}+"&tahun="+$F{TAHUN}+""]]></jr:codeExpression>
+					</jr:DataMatrix>
+				</componentElement>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="37" splitType="Stretch">
+			<rectangle>
+				<reportElement key="rectangle" x="678" y="0" width="89" height="37" uuid="6340fa29-9c8e-4730-a802-88518f43d009"/>
+			</rectangle>
+			<rectangle>
+				<reportElement key="rectangle" x="44" y="0" width="157" height="37" backcolor="#FFFFFF" uuid="fca76d5a-b015-4de7-9c30-66aa5f47ce51"/>
+			</rectangle>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="49" y="2" width="146" height="12" uuid="1a74c58c-6e4d-450b-9c45-82a9dcf3e435"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAMA}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement key="rectangle" x="201" y="0" width="29" height="37" uuid="4aacddbb-34ac-44fb-8f87-851a5f0f3f63"/>
+			</rectangle>
+			<rectangle>
+				<reportElement key="rectangle" x="230" y="0" width="92" height="37" uuid="1ba06ef5-db23-40b6-81f4-c3e62cb79142"/>
+			</rectangle>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="202" y="4" width="25" height="12" uuid="e1fbf65e-92e6-4388-9341-1bd107440c14"/>
+				<textElement>
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GOLONGAN}+"/"+$F{PANGKAT}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement key="rectangle" x="0" y="0" width="44" height="37" uuid="9e01343f-235c-48f6-926d-00cd512b87cd"/>
+			</rectangle>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" x="5" y="4" width="27" height="20" uuid="0b0ee78c-dab8-4fab-9555-054aeead19ca"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{G_KALOGAD_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="48" y="14" width="147" height="12" uuid="7890ae7d-3d3e-472d-beb0-d9c47494d61f"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NIP}+"/"+$F{NRK}+"/"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement key="rectangle" x="322" y="0" width="89" height="37" uuid="c30d8257-b0aa-4bb3-8cfe-66d82e6adfb9"/>
+			</rectangle>
+			<rectangle>
+				<reportElement key="rectangle" x="411" y="0" width="89" height="37" uuid="fee16fae-8ec7-42bb-b2a1-4fe9af363611"/>
+			</rectangle>
+			<rectangle>
+				<reportElement key="rectangle" x="500" y="0" width="89" height="37" uuid="d9f4bebb-43a1-4ed1-90e5-43506173a575"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement key="textField" x="505" y="19" width="79" height="14" uuid="1efecdde-a944-4c28-8a86-04fb505a395f"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SELPPH}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement key="rectangle" x="589" y="0" width="89" height="37" uuid="9ebcc1e3-a674-4d4f-a7e7-9d6de15b1c25"/>
+			</rectangle>
+			<line>
+				<reportElement key="line-2" x="589" y="0" width="1" height="37" uuid="85e404c8-1533-4e22-8a49-088417737d4c"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement key="textField-22" x="682" y="19" width="79" height="14" uuid="a0283f81-dada-4160-ac67-547c8638cc79"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SELPPH}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-25" x="257" y="2" width="58" height="15" uuid="2797c84c-b67a-4cf3-ba8d-7f1de385329e"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-26" x="257" y="17" width="58" height="15" uuid="4f5835cc-38b4-488c-99a3-149f68ba9540"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-29" x="349" y="2" width="58" height="15" uuid="df32c854-52eb-4b68-8cbe-01b4c313e584"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-30" x="349" y="17" width="58" height="15" uuid="1e86b3ef-e4c3-4030-8646-1cf9b43360a6"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-35" x="434" y="3" width="58" height="15" uuid="be68a353-c6ac-427a-93cd-06ff09f2fade"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-36" x="434" y="15" width="58" height="15" uuid="93fbdf84-e28a-4efe-b3da-9d645cec1f15"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-39" x="615" y="3" width="58" height="15" uuid="da58d3e3-1dcd-481a-8022-a01187e445ce"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-40" x="615" y="15" width="58" height="15" uuid="3e3a3fbd-3015-40c6-b628-505efc627fcc"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-41" x="526" y="3" width="58" height="15" uuid="6b243fe0-c64e-400f-bb5a-bbd59334788e"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-43" x="702" y="3" width="58" height="15" uuid="96884198-dc6b-4da7-97cb-a4d737a72925"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[0]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-26" x="48" y="25" width="147" height="12" uuid="c88d7d43-c49a-469f-adb7-23a26b57fe79"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NPWP}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="31" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement key="textField-16" x="658" y="8" width="122" height="19" uuid="b951f718-77ce-4527-9d13-1fc9db49f219"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font isItalic="true" pdfFontName="Helvetica-Oblique"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

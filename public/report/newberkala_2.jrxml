@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="newberkala" language="groovy" pageWidth="667" pageHeight="985" columnWidth="627" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="06a79fa9-47c6-435c-aee9-13160c382bb9">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="169"/>
+	<parameter name="THBL" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{THBL}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="v2" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{v2}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="v3" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{v3}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="v4" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{v4}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="v6" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{v6}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="v7" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{v7}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="valnrk" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{valnrk}]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+	ROWNUM AS rn,
+	nrk,
+	nip18,
+	nama,
+	noskgol,
+	TO_CHAR (talhir, 'dd-mm-yyyy') talhir,
+	TO_CHAR (mugad, 'dd-mm-yyyy') mugad,
+CONCAT(
+CONCAT(
+substr(TO_CHAR (mugad, 'dd-mm-yyyy'),1,2),
+CASE substr(TO_CHAR (mugad, 'dd-mm-yyyy'),4,2)
+WHEN '01' THEN ' JANUARI '
+WHEN '02' THEN ' FEBRUARI '
+WHEN '03' THEN ' MARET '
+WHEN '04' THEN ' APRIL '
+WHEN '05' THEN ' MEI '
+WHEN '06' THEN ' JUNI '
+WHEN '07' THEN ' JULI '
+WHEN '08' THEN ' AGUSTUS '
+WHEN '09' THEN ' SEPTEMBER '
+WHEN '10' THEN ' OKTOBER '
+WHEN '11' THEN ' NOVEMBER '
+WHEN '12' THEN ' DESEMBER '
+END),substr(TO_CHAR (mugad, 'dd-mm-yyyy'),7,4)) AS MUGAD_INDO,
+	TO_CHAR (tgijazah, 'dd-mm-yyyy') next_brkala,
+
+CONCAT(
+CONCAT(
+substr(TO_CHAR (tgijazah, 'dd-mm-yyyy'),1,2),
+CASE substr(TO_CHAR (tgijazah, 'dd-mm-yyyy'),4,2)
+WHEN '01' THEN ' JANUARI '
+WHEN '02' THEN ' FEBRUARI '
+WHEN '03' THEN ' MARET '
+WHEN '04' THEN ' APRIL '
+WHEN '05' THEN ' MEI '
+WHEN '06' THEN ' JUNI '
+WHEN '07' THEN ' JULI '
+WHEN '08' THEN ' AGUSTUS '
+WHEN '09' THEN ' SEPTEMBER '
+WHEN '10' THEN ' OKTOBER '
+WHEN '11' THEN ' NOVEMBER '
+WHEN '12' THEN ' DESEMBER '
+END),substr(TO_CHAR (tgijazah, 'dd-mm-yyyy'),7,4)) AS NEXT_INDO,
+	pathir,
+	kodik,
+	alamat || rt || rw || prop kolok,
+	tunjab gjlama,
+	tunfung gjbaru,
+	masker,
+	stapeg,
+	mskgol,
+	namisu AS kantor,
+	titel AS hub_dinas
+FROM
+	pers_duk_pangkat_bkala
+WHERE
+	THBL = $P{THBL}
+ORDER BY
+	noskgol ASC]]>
+	</queryString>
+	<field name="RN" class="java.math.BigDecimal"/>
+	<field name="NRK" class="java.lang.String"/>
+	<field name="NIP18" class="java.lang.String"/>
+	<field name="NAMA" class="java.lang.String"/>
+	<field name="NOSKGOL" class="java.lang.String"/>
+	<field name="TALHIR" class="java.lang.String"/>
+	<field name="MUGAD" class="java.lang.String"/>
+	<field name="MUGAD_INDO" class="java.lang.String"/>
+	<field name="NEXT_BRKALA" class="java.lang.String"/>
+	<field name="NEXT_INDO" class="java.lang.String"/>
+	<field name="PATHIR" class="java.lang.String"/>
+	<field name="KODIK" class="java.lang.String"/>
+	<field name="KOLOK" class="java.lang.String"/>
+	<field name="GJLAMA" class="java.math.BigDecimal"/>
+	<field name="GJBARU" class="java.math.BigDecimal"/>
+	<field name="MASKER" class="java.lang.String"/>
+	<field name="STAPEG" class="java.math.BigDecimal"/>
+	<field name="MSKGOL" class="java.lang.String"/>
+	<field name="KANTOR" class="java.lang.String"/>
+	<field name="HUB_DINAS" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="11" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="84" splitType="Stretch">
+			<staticText>
+				<reportElement x="97" y="0" width="400" height="20" uuid="ee2152ff-04ba-42a8-b90a-40236406dd28"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="97" y="20" width="400" height="20" uuid="22db3564-cfb1-4eb0-9842-3fa66f0c5006"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="97" y="40" width="400" height="20" uuid="f8cfebd8-bfb0-4f80-bc55-5c5801acbcaf"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="141" splitType="Stretch">
+			<staticText>
+				<reportElement x="374" y="0" width="55" height="20" uuid="2b623cd9-69f5-480e-b49e-f3cd8d59fa62"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="432" y="42" width="100" height="20" uuid="42c23bb0-7a14-49c3-a546-87fcdfd56637"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MUGAD_INDO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="319" y="20" width="55" height="20" uuid="69925108-5c1c-4d31-831d-690dce33362f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="417" y="101" width="141" height="37" uuid="e7994cef-b949-4c24-bf51-ecb6dc811c47"/>
+				<textElement markup="none">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA['KEPALA BADAN PENGELOLA KEUANGAN DAERAH']]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="18" y="80" width="65" height="20" uuid="882324a3-f743-4b38-8a61-9df8a49a7783"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="83" y="80" width="10" height="20" uuid="d9f496af-8995-44be-8f33-ee4024ff3f40"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="93" y="80" width="150" height="20" uuid="3dc140e1-954f-44bb-81ef-7545236355cf"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="53" y="57" width="150" height="20" uuid="29e51c56-c5ed-4c0d-a28b-1a61ce12b912"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOSKGOL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="475" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="142" width="250" height="14" uuid="a301a502-ada8-4657-9bbe-41c0b15de1f2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAMA}+' / '+$F{TALHIR}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="158" width="250" height="14" uuid="22673389-b64b-44ca-a45e-5e0f4926fd71"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NIP18}+' / '+$F{NRK}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="174" width="250" height="14" uuid="ea470ca2-c900-4c50-aed0-ac89d3a7b532"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PATHIR}+' / '+$F{KODIK}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="190" width="250" height="14" uuid="81138386-78dc-4954-bf2a-1ccd7aa2363b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{KANTOR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="280" y="206" width="230" height="14" uuid="c1b3fde2-06dd-4c90-a53e-f34b9647488c"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GJLAMA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="280" y="250" width="230" height="14" uuid="069416b4-a21a-4988-8f7d-856c2fe61f91"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GJBARU}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="266" width="250" height="14" uuid="6de24343-4eb0-4c23-a247-2192bdbdab23"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MASKER}+' TAHUN']]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="282" width="250" height="14" uuid="0adb0191-cc71-4956-b023-7bcb5a51f741"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PATHIR}+' / '+$F{KODIK}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="298" width="250" height="14" uuid="efcdf19f-cb8d-4080-a721-90ec149f8eb2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MUGAD_INDO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="314" width="250" height="14" uuid="dfaa9af3-dd3f-4759-a488-d339d8d0fb9a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{HUB_DINAS}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="329" width="250" height="14" uuid="42e2df36-a58b-44d3-94d5-c0ff3770c94a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NEXT_INDO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="345" width="250" height="14" uuid="fcb1443c-1875-40c6-9913-99c82afeb3f5"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MSKGOL}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="240" y="436" width="344" height="28" uuid="578332c8-1782-4777-b2d1-18081b4545ad"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression><![CDATA[$P{v2} + '                  '+$P{v3}+'                                                   '+ $P{v4}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="190" splitType="Stretch">
+			<textField>
+				<reportElement x="317" y="28" width="262" height="30" uuid="64db8ec8-834c-4bce-8f59-e778bda02c81"/>
+				<textElement textAlignment="Center" markup="none">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA['KEPALA BADAN KEPEGAWAIAN DAERAH' ]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="340" y="114" width="200" height="20" uuid="23fd1145-6c17-4883-a98f-861f7eca070b"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{v6}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="340" y="134" width="30" height="20" uuid="76ad206a-e2be-4a08-b01d-21ec0a8e4cff"/>
+				<text><![CDATA[NIP]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="388" y="134" width="152" height="20" uuid="96db2b7f-d1bb-4729-bb04-a789aac95db0"/>
+				<textFieldExpression><![CDATA[$P{v7}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="78" width="10" height="15" uuid="fe770102-a39b-46d8-9cc2-e40b7d31d927"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[1.]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="12" y="78" width="250" height="15" uuid="03e71e92-06d1-4425-8ee1-db4625c9ba86"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA['KEPALA '+$F{KANTOR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="93" width="10" height="15" uuid="5c92c61e-6604-4f5b-bc4d-fcab72232553"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[2.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="93" width="267" height="15" uuid="f0b2602b-4e5a-4d55-8f2e-a3807b43630d"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[KEPALA BIDANG PENGENDALIAN KEPEGAWAIAN BKD PROVINSI DKI JAKARTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="108" width="10" height="15" uuid="e98a712e-97e6-4ada-ac3e-52677d742b80"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[3.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="108" width="267" height="15" uuid="b4e82a7e-4d1e-4c6d-991d-f2823af40035"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[PEGAWAI YANG BERSANGKUTAN]]></text>
+			</staticText>
+			<image>
+				<reportElement x="397" y="58" width="100" height="50" uuid="1e50b0e5-23db-48a3-b8a3-2d92b730d869"/>
+				<imageExpression><![CDATA['http://10.15.34.34/assets/img/ttd/'+$P{valnrk}+'.jpg']]></imageExpression>
+			</image>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="4" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
