@@ -218,8 +218,8 @@ class Login extends CI_Controller {
 		if ($this->input->post() ) 
 		{
 
-			if($this->input->post('security_code') == $this->session->userdata('mycaptcha'))
-			{
+			// if($this->input->post('security_code') == $this->session->userdata('mycaptcha'))
+			// {
 				$data = array(
 					'username' => $this->input->post('username'),
 					'password' => $this->input->post('password'),
@@ -417,11 +417,11 @@ class Login extends CI_Controller {
 					}
 
 					echo json_encode($data);
-			}
-			else
-			{
-				echo json_encode(array('response' => 'gagal','error_message' => "Login Gagal, captcha yang anda masukan salah!"));
-			}
+			// }
+			// else
+			// {
+			// 	echo json_encode(array('response' => 'gagal','error_message' => "Login Gagal, captcha yang anda masukan salah!"));
+			// }
 
 		
 		}

@@ -784,6 +784,165 @@
         
         return $option;       
     }
+
+    //untuk tampilan THBL Susulan
+    public function getTHBLsusulan($thbl="")
+    {
+        
+        $sql = "SELECT DISTINCT
+                    (thbl),
+                    TO_CHAR (
+                        TO_DATE (THBL, 'YYYYMM'),
+                        'MONTH YYYY'
+                    ) AS BL_TH
+                FROM
+                    PERS_DUK_PANGKAT_HISTDUK
+                WHERE
+                    upload IN ('1', '9')
+                AND SUBSTR(THBL,5, 2) IN (
+                    '01',
+                    '02',
+                    '03',
+                    '04',
+                    '05',
+                    '06',
+                    '07',
+                    '08',
+                    '09',
+                    '10',
+                    '11',
+                    '12'
+                )
+                AND NJUMBERGAJI > 0 AND sul IN (1)
+                ORDER BY
+                    thbl DESC";
+
+        $query = $this->db ->query($sql);      
+        $option  = "";
+        
+        foreach($query->result() as $row){
+            
+            if($thbl == $row->THBL)
+            {
+                $option .= "<option selected value='".$row->THBL."'>".$row->BL_TH."</option>";
+            }
+            else
+            {          
+                $option .= "<option value='".$row->THBL."'>".$row->BL_TH."</option>";
+            }
+            
+        
+        }
+        return $option;       
+    }
+
+
+    //untuk tampilan SPMU gaji susulan
+    public function getSpmuFromsusulan($thbl,$user_id,$user_group)
+    {
+    
+        if($user_group == 52){
+            // $cek_spmu = "SELECT * FROM PERS_TABEL_SPMU WHERE KODE_UNIT_SIPKD = '".$user_id."' ";
+            $cek_spmu = "SELECT * FROM PERS_TABEL_SPMU WHERE KODE_UNIT_SIPKD = '".substr($user_id,-8)."' ";
+            //echo $cek_spmu; exit();
+            $query_cek = $this->db->query($cek_spmu)->row(); 
+
+            //echo $query_cek->KODE_SPM; exit();
+
+            
+            $sql="SELECT BKL.SPMU,B.NAMA FROM (SELECT DISTINCT(SPMU) SPMU FROM  PERS_DUK_PANGKAT_HISTDUK A WHERE  THBL='".$thbl."' AND SPMU = '".$query_cek->KODE_SPM."' AND NJUMBERGAJI > 0 AND sul IN (1) ORDER BY SPMU ASC) BKL 
+                INNER JOIN PERS_TABEL_SPMU B ON BKL.SPMU = B.KODE_SPM ORDER BY BKL.SPMU ASC 
+            ";
+
+        }else{
+            $sql="SELECT BKL.SPMU,B.NAMA FROM (SELECT DISTINCT(SPMU) SPMU FROM PERS_DUK_PANGKAT_HISTDUK A WHERE  THBL='".$thbl."' AND NJUMBERGAJI > 0 AND sul IN (1) ORDER BY SPMU ASC) BKL 
+                INNER JOIN PERS_TABEL_SPMU B ON BKL.SPMU = B.KODE_SPM ORDER BY BKL.SPMU ASC 
+            ";
+        }
+    
+        
+        $query = $this->db->query($sql);        
+
+        $option  = "";
+        $option .= "<option selected value=''>-</option>"; 
+        foreach($query->result() as $row){
+                     
+                $option .= "<option value='".$row->SPMU."'>".$row->SPMU." - ".$row->NAMA."</option>";
+            
+        }
+        
+        return $option;       
+    }
+
+    //untuk tampilan SPMU rapel gaji
+    public function getSpmuRapelGaji($thbl,$user_id,$user_group)
+    {
+    
+        if($user_group == 52){
+            // $cek_spmu = "SELECT * FROM PERS_TABEL_SPMU WHERE KODE_UNIT_SIPKD = '".$user_id."' ";
+            $cek_spmu = "SELECT * FROM PERS_TABEL_SPMU WHERE KODE_UNIT_SIPKD = '".substr($user_id,-8)."' ";
+            //echo $cek_spmu; exit();
+            $query_cek = $this->db->query($cek_spmu)->row(); 
+
+            //echo $query_cek->KODE_SPM; exit();
+
+            
+            $sql="SELECT BKL.SPMU,B.NAMA FROM (SELECT DISTINCT(SPMU) SPMU FROM  PERS_RAPEL_GAJI A WHERE  THBL='".$thbl."' AND SPMU = '".$query_cek->KODE_SPM."' AND NJUMBERGAJI > 0 AND UPLOAD IN (1) ORDER BY SPMU ASC) BKL 
+                INNER JOIN PERS_TABEL_SPMU B ON BKL.SPMU = B.KODE_SPM ORDER BY BKL.SPMU ASC 
+            ";
+
+        }else{
+            $sql="SELECT BKL.SPMU,B.NAMA FROM (SELECT DISTINCT(SPMU) SPMU FROM PERS_RAPEL_GAJI A WHERE  THBL='".$thbl."' AND NJUMBERGAJI > 0 AND UPLOAD IN (1) ORDER BY SPMU ASC) BKL 
+                INNER JOIN PERS_TABEL_SPMU B ON BKL.SPMU = B.KODE_SPM ORDER BY BKL.SPMU ASC 
+            ";
+        }
+    
+    
+        
+        $query = $this->db->query($sql);        
+
+        $option  = "";
+        $option .= "<option selected value=''>-</option>"; 
+        foreach($query->result() as $row){
+                     
+                $option .= "<option value='".$row->SPMU."'>".$row->SPMU." - ".$row->NAMA."</option>";
+            
+        }
+        
+        return $option;       
+    }
+
+    //untuk tampilan Tahun rapel gaji
+    public function getTahunrapelgaji($thbl="")
+    {
+        
+        $sql = "SELECT DISTINCT
+                THBL
+                FROM
+                PERS_RAPEL_GAJI
+                WHERE
+                NJUMBERGAJI > 0 AND UPLOAD IN (1)
+                ORDER BY
+                thbl DESC";
+
+        $query = $this->db ->query($sql);      
+        $option  = "";
+        
+        foreach($query->result() as $row){
+            
+            if($thbl == $row->THBL)
+            {
+                $option .= "<option selected value='".$row->THBL."'>".$row->THBL."</option>";
+            }
+            else
+            {          
+                $option .= "<option value='".$row->THBL."'>".$row->THBL."</option>";
+            }
+            
+        
+        }
+        return $option;       
+    }
 	
 	
 

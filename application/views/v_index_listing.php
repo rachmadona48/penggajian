@@ -5,9 +5,9 @@
         font-weight: bold;
     }
 
-    #page-wrapper{
+    /*#page-wrapper{
         background: rgba(0, 0, 0, 0) url("/penggajian/assets/inspinia/css/patterns/shattered.png") repeat scroll 0 0;
-    }
+    }*/
 
     #btnCari{
         margin-right: 82px;
@@ -133,6 +133,9 @@
                                                 <option value="6">Tunjangan Transport</option>
 												<option value="8">Gaji PTT</option>
 												<option value="9">TPP PTT</option>
+                                                <option value="10">Gaji Susulan</option>
+                                                <option value="11">Gaji Inputan (per NRK)</option>
+                                                <option value="12">Rapel Gaji</option>
                                             <?php }else{ ?>
                                                 <option value="0">Pilih Jenis Laporan</option>
                                                 <option value="1">Gaji</option>
@@ -143,7 +146,10 @@
                                                 <option value="5">PPH</option>
                                                 <option value="6">Tunjangan Transport</option>
 												<option value="8">Gaji PTT</option>
-												<option value="9">TPP PTT</option>												
+												<option value="9">TPP PTT</option>	
+                                                <option value="10">Gaji Susulan</option>
+                                                <option value="11">Gaji Inputan (per NRK)</option>
+                                                <option value="12">Rapel Gaji</option>								
                                             <?php } ?>
 
                                         <?php }else{ ?>
@@ -157,7 +163,9 @@
                                             <option value="6">Tunjangan Transport</option>
 											<option value="8">Gaji PTT</option>
 											<option value="9">TPP PTT</option>
-											
+                                            <option value="10">Gaji Susulan</option>
+                                            <option value="11">Gaji Inputan (per NRK)</option>
+											<option value="12">Rapel Gaji</option>
                                                     <!--<option value="3">Penghargaan</option>-->  
                                         <?php } ?>
                                         
@@ -267,6 +275,18 @@
 			else if (jenis == '9')
             {
                 url = '<?php echo "Listing/indextppptt"; ?>';
+            }
+            else if (jenis == '10')
+            {
+                url = '<?php echo "Listing/gajisusulan"; ?>';
+            }
+            else if (jenis == '11')
+            {
+                url = '<?php echo "Listing/gaji_input_per_nrk"; ?>';
+            }
+            else if (jenis == '12')
+            {
+                url = '<?php echo "Listing/rapel_gaji"; ?>';
             }
             else
             {

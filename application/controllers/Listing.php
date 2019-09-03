@@ -311,6 +311,105 @@ class Listing extends CI_Controller {
 		$this->load->view('v_listing_tppptt', $data);
 	}
 
+	// Tampilan gaji susulan
+	public function gajisusulan() {
+		$data['user_group'] = $this->user['user_group'];
+		$data['getTHBLsusulan'] = $this->listing->getTHBLsusulan();
+				
+		$user_id = $this->user['id'];
+		$grp  = $this->user['user_group'];
+		if($grp == 52){
+			$spmu = $this->listing->cek_kode_spmu($user_id);
+			$data['spmu'] = $spmu->KODE_SPM;
+			//$spmp = $spmu->KODE_SPM;
+			
+			//$data['spmu'] = '';
+			//$spmp = "";
+			
+			//echo $spmp.' ggggggggggggg'; exit();
+		}else{
+			$data['spmu'] = '';
+			//$spmp = "";
+		}
+		
+		$thblp = "";
+		$spmp = "";
+		$user_group = "";
+		//$user_group = $this->user['user_group'];
+		// $data['spmu'] = $this->listing->getSpmuFromsusulan($thblp, $spmp, $user_group);
+		//$data['spmlistinggajiptt'] = $this->listing->getSpmuFromgajiptt($thblp,$this->user['id'], $spmp, $user_group);
+
+		$data['menu_select'] = $this->infopegawai->getMenuSelectHistNew($this->user['user_group']);
+
+		$this->load->view('v_listing_susulan', $data);
+	}
+
+	// Tampilan gaji input per nrk
+	public function gaji_input_per_nrk() {
+		$data['user_group'] = $this->user['user_group'];
+		$data['getTHBLinput_nrk'] = $this->listing->getTahunBerkalaHistduk();
+				
+		$user_id = $this->user['id'];
+		$grp  = $this->user['user_group'];
+		if($grp == 52){
+			$spmu = $this->listing->cek_kode_spmu($user_id);
+			$data['spmu'] = $spmu->KODE_SPM;
+			//$spmp = $spmu->KODE_SPM;
+			
+			//$data['spmu'] = '';
+			//$spmp = "";
+			
+			//echo $spmp.' ggggggggggggg'; exit();
+		}else{
+			$data['spmu'] = '';
+			//$spmp = "";
+		}
+		
+		$thblp = "";
+		$spmp = "";
+		$user_group = "";
+		//$user_group = $this->user['user_group'];
+		// $data['spmu'] = $this->listing->getSpmuFromsusulan($thblp, $spmp, $user_group);
+		//$data['spmlistinggajiptt'] = $this->listing->getSpmuFromgajiptt($thblp,$this->user['id'], $spmp, $user_group);
+
+		$data['menu_select'] = $this->infopegawai->getMenuSelectHistNew($this->user['user_group']);
+
+		$this->load->view('v_listing_gaji_input', $data);
+	}
+
+	// Tampilan rapel gaji
+	public function rapel_gaji() {
+		$data['user_group'] = $this->user['user_group'];
+		$data['getTahunrapelgaji'] = $this->listing->getTahunrapelgaji();
+				
+		$user_id = $this->user['id'];
+		$grp  = $this->user['user_group'];
+		if($grp == 52){
+			$spmu = $this->listing->cek_kode_spmu($user_id);
+			$data['spmu'] = $spmu->KODE_SPM;
+			//$spmp = $spmu->KODE_SPM;
+			
+			//$data['spmu'] = '';
+			//$spmp = "";
+			
+			//echo $spmp.' ggggggggggggg'; exit();
+		}else{
+			$data['spmu'] = '';
+			//$spmp = "";
+		}
+		
+		$thblp = "";
+		$spmp = "";
+		$user_group = "";
+		//$user_group = $this->user['user_group'];
+		// $data['spmu'] = $this->listing->getSpmuFromsusulan($thblp, $spmp, $user_group);
+		//$data['spmlistinggajiptt'] = $this->listing->getSpmuFromgajiptt($thblp,$this->user['id'], $spmp, $user_group);
+
+		$data['menu_select'] = $this->infopegawai->getMenuSelectHistNew($this->user['user_group']);
+
+		$this->load->view('v_listing_rapel_gaji', $data);
+	}
+
 	public function getSpmuFromHistdukRekGaji() {
 
 		//echo 'listing gaji tes';exit();
@@ -363,6 +462,28 @@ class Listing extends CI_Controller {
 		$user_id = $this->user['id'];
 		$user_group = $this->user['user_group'];
 		$list = $this->listing->getSpmuFromListingTransport($thbl,$user_id,$user_group);
+
+		$arr = array('response' => 'SUKSES', 'list' => $list);
+		echo json_encode($arr);
+	}
+
+	public function getSpmuGajiSusulan() {
+
+		$thbl = $this->input->post('thbl');
+		$user_id = $this->user['id'];
+		$user_group = $this->user['user_group'];
+		$list = $this->listing->getSpmuFromsusulan($thbl,$user_id,$user_group);
+
+		$arr = array('response' => 'SUKSES', 'list' => $list);
+		echo json_encode($arr);
+	}
+
+	public function getSpmu_rekap_rapel() {
+
+		$thbl = $this->input->post('thbl');
+		$user_id = $this->user['id'];
+		$user_group = $this->user['user_group'];
+		$list = $this->listing->getSpmuRapelGaji($thbl,$user_id,$user_group);
 
 		$arr = array('response' => 'SUKSES', 'list' => $list);
 		echo json_encode($arr);
@@ -5466,6 +5587,1099 @@ class Listing extends CI_Controller {
 		}
 
 	}
+
+	public function cetak_rekap_gaji_susulan($thbl) {
+		$spmu = $this->uri->segment(4, 0);
+		$hasilbulan = $this->convertBulan($thbl);
+		$tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+
+		/*echo $bln; die();*/
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rekapgaji_susulan.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		$params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		$params->put("pBulannama", $hasilbulan);
+		$params->put("pSPMU", $spmu);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Rekapgaji Susulan.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_listing_gaji_susulan($thbl) {
+		$spmu = $this->uri->segment(4, 0);
+		$hasilbulan = $this->convertBulan($thbl);
+		$tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+
+		/*echo $bln; die();*/
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rptGajiSPM_susulan.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		$params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		$params->put("pBulannama", $hasilbulan);
+		$params->put("pSPMU", $spmu);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Listing Susulan.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_gaji_input_all($thbl) {
+		$nrk = $this->uri->segment(4, 0);
+		$hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+
+		/*echo $bln; die();*/
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rptGajiNRK_all.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		$params->put("pBulannama", $hasilbulan);
+		$params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Listing Gaji Per NRK.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_gaji_input_diskes($thbl) {
+		$nrk = $this->uri->segment(4, 0);
+		$hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+
+		/*echo $bln; die();*/
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rptGajiNRK_dinkes.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		$params->put("pBulannama", $hasilbulan);
+		$params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Listing Gaji Per NRK Diskes.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_gaji_input_disdik($thbl) {
+		$nrk = $this->uri->segment(4, 0);
+		$hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+
+		/*echo $bln; die();*/
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rptGajiNRK_disdik.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		$params->put("pBulannama", $hasilbulan);
+		$params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Listing Gaji Per NRK Disdik.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_rapel_gaji_gab($thbl) {
+		// $nrk = $this->uri->segment(4, 0);
+		// $hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+		// echo gettype($thbl);
+		// echo $thbl; die();
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rekapRapelGaji_2019_Gab.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		// $params->put("pBulannama", $hasilbulan);
+		// $params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Rapel Gaji Gabungan.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_rapel_gaji_spmu($thbl) {
+		$spmu = $this->uri->segment(4, 0);
+		// $hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$thbl;exit();
+		// echo gettype($thbl);
+		// echo $thbl; die();
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rekapRapelGaji_2019_spmu.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		$params->put("pSPMU", $spmu);
+		// $params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Rapel Gaji SKPD.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_rapel_gaji_dinkes($thbl) {
+		// $nrk = $this->uri->segment(4, 0);
+		// $hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+		// echo gettype($thbl);
+		// echo $thbl; die();
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rekapRapelGaji_2019_dinkes.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		// $params->put("pBulannama", $hasilbulan);
+		// $params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Rapel Gaji Dinkes.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_rapel_gaji_disdik($thbl) {
+		// $nrk = $this->uri->segment(4, 0);
+		// $hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+		// echo gettype($thbl);
+		// echo $thbl; die();
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rekapRapelGaji_2019_disdik.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		// $params->put("pBulannama", $hasilbulan);
+		// $params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Rapel Gaji Disdik.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_rapel_listing_gaji_gab($thbl) {
+		// $nrk = $this->uri->segment(4, 0);
+		// $hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+		// echo gettype($thbl);
+		// echo $thbl; die();
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rptRapelGaji_2019_Gab.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		// $params->put("pBulannama", $hasilbulan);
+		// $params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Listing Gaji Gabungan.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_rapel_listing_gaji_spmu($thbl) {
+		$spmu = $this->uri->segment(4, 0);
+		// $hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$thbl;exit();
+		// echo gettype($thbl);
+		// echo $thbl; die();
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rptRapelGaji_2019_spmu.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		$params->put("pSPMU", $spmu);
+		// $params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Listing Gaji SKPD.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_rapel_listing_gaji_diskes($thbl) {
+		// $nrk = $this->uri->segment(4, 0);
+		// $hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+		// echo gettype($thbl);
+		// echo $thbl; die();
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rptRapelGaji_2019_dinkes.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		// $params->put("pBulannama", $hasilbulan);
+		// $params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Listing Gaji Dinkes.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
+	public function cetak_rapel_listing_gaji_disdik($thbl) {
+		// $nrk = $this->uri->segment(4, 0);
+		// $hasilbulan = $this->convertBulan($thbl);
+		// $tahun = substr($thbl, 0,4);
+		// echo $spmu.' - '.$hasilbulan.' - '.$tahun;exit();
+		// echo gettype($thbl);
+		// echo $thbl; die();
+
+		require "http://localhost:8080/JavaBridge/java/Java.inc";
+
+		$system = new Java('java.lang.System');
+
+		$class = new JavaClass("java.lang.Class");
+
+		$class->forName("oracle.jdbc.driver.OracleDriver");
+
+		$driverManager = new JavaClass("java.sql.DriverManager");
+
+		$conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.29:1521/SIMPEG", "simpeg", "dkis1mp3gn3w");
+		// $conn = $driverManager->getConnection("jdbc:oracle:thin:@//10.15.34.61:1521/simpegdev", "simpegnew", "simpegnew");
+
+		$compileManager = new JavaClass("net.sf.jasperreports.engine.JasperCompileManager");
+
+		// <*untuk menghilangkan Undefined property: java_Client::$cancelProxyCreationTag
+		$compileManager->__client->cancelProxyCreationTag = 0;
+		// *>
+		$viewer = new JavaClass("net.sf.jasperreports.view.JasperViewer");
+		$folderPath = realpath(".") . "/public/report/";
+
+		$report = $compileManager->compileReport($folderPath . "rptRapelGaji_2019_disdik.jrxml");
+
+		$fillManager = new JavaClass("net.sf.jasperreports.engine.JasperFillManager");
+		$params = new Java("java.util.HashMap");
+
+		// $params->put("pTahun", $tahun);
+		$params->put("pTHBL", $thbl);
+		// $params->put("pBulannama", $hasilbulan);
+		// $params->put("pInputan", $nrk);
+
+		$emptyDataSource = new Java("net.sf.jasperreports.engine.JREmptyDataSource");
+
+		$runmanager = new Java("net.sf.jasperreports.engine.JasperRunManager");
+
+		$jasperPrint = $fillManager->fillReport($report, $params, $conn);
+
+		$filename = "Listing Gaji Disdik.pdf";
+		$outputPath = realpath(".") . "/assets/pdf/" . $filename;
+
+		$exporter = new Java("net.sf.jasperreports.engine.export.JRPdfExporter");
+
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->JASPER_PRINT, $jasperPrint);
+		$exporter->setParameter(java("net.sf.jasperreports.engine.JRExporterParameter")->OUTPUT_FILE_NAME, $outputPath);
+
+		$exportManager = new JavaClass("net.sf.jasperreports.engine.JasperExportManager");
+
+		$exporter->exportReport();
+
+		// $path = './path/to/file.pdf';
+
+		if (file_exists($outputPath)) {
+			// echo "Create PDF berhasil." . $outputPath;
+			// if ($dwl == 1) {
+			//  $this->load->helper('download');
+			//  force_download($outputPath, NULL);
+			// } else {
+			header("Cache-Control: no-store, no-cache, must-revalidate"); //HTTP 1.1
+			header("Pragma: no-cache"); //HTTP 1.0
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: inline; filename=' . $filename);
+			header('Content-Transfer-Encoding: binary');
+			header('Accept-Ranges: bytes');
+
+			readfile($outputPath);
+
+			// }
+
+		} else {
+			echo "Create PDF gagal.";
+		}
+
+		/*"http://pegawai.jakarta.go.id/validasi/cetak_rptgaji_spmu/201703/c030"*/
+	}
+
 
 	public function cetakSlipGaji($thbl, $nrk) {
 
